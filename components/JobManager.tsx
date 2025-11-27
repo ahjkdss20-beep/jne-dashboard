@@ -94,13 +94,14 @@ export const JobManager: React.FC<JobManagerProps> = ({
       
       // Skip header (index 0), start from index 1
       for(let i=1; i<lines.length; i++) {
-        if(!lines[i].trim()) continue;
+        // Safe check for empty lines
+        if(!lines[i] || !lines[i].trim()) continue;
         
         // Handle comma or semicolon separator
         const cols = lines[i].split(/,|;/); 
         
-        // Basic validation: ensure we have enough columns
-        if (cols.length >= 5) {
+        // Basic validation: ensure we have enough columns and first col is not empty
+        if (cols.length >= 5 && cols[0]) {
             const rawStatus = cols[3]?.trim();
             // Validate status
             let validStatus: Status = 'Pending';
@@ -126,7 +127,7 @@ export const JobManager: React.FC<JobManagerProps> = ({
           onBulkAddJobs(newJobs);
           alert(`Berhasil mengimport ${newJobs.length} data pekerjaan!`);
       } else {
-          alert("Gagal membaca file atau format tidak sesuai. Silakan gunakan Template yang disediakan.");
+          alert("Gagal membaca file atau format tidak sesuai. Pastikan menggunakan Template yang disediakan dan tidak ada baris kosong.");
       }
       if (fileInputRef.current) fileInputRef.current.value = '';
     };
